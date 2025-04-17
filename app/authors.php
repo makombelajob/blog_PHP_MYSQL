@@ -18,7 +18,7 @@ $authors = $stmt->fetchAll();
 </head>
 <body>
     <main class="container">
-        <h2 class="fs-1 text-center text-uppercase my-3">Les noms des authors</h2>
+        <h2 class="fs-1 text-center text-uppercase my-3">Les noms des auteurs</h2>
         <table class="row w-100">
             <thead class="col-12">
                 <tr class="bg-warning row rounded-4 my-1">
