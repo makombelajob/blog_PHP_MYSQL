@@ -1,0 +1,71 @@
+services:
+    apache:
+        image: php:8.5-apache
+        container_name: blog_ap
+        build:
+            context: ./php
+        ports:
+            -   "8080:80"
+        volumes:
+            -   ./app:/var/www/html/
+        depends_on:
+            -   database
+
+    database:
+        image: mysql:8.0
+        container_name: blog_my
+        environment:
+            MYSQL_ROOT_PASSWORD: admin77911
+            MYSQL_DATABASE: blog
+            MYSQL_USER: admin
+            MYSQL_PASSWORD: admin7791
+        ports:
+            -   "3306:3306"
+        volumes:
+            -   ./mysql:/var/lib/mysql
+
+    phpmyadmin:
+        image: phpmyadmin
+        container_name: blog_pma
+        ports:
+            -   "8081:80"
+        environment:
+            PMA_HOST: database
+            PMA_PASSWORD: admin77911
+        depends_on:
+            -   database
+
+    postgresql:
+        image: bitnami/postgresql
+        container_name: blog_pos
+        environment:
+            POSTGRES_USER: user
+            POSTGRES_PASSWORD: admin
+            POSTGRES_DB: blog
+        ports:
+            - "5432:5432"
+        volumes:
+            - ./postgres:/bitnami/postgresql
+
+    pgadmin:
+        image: dpage/pgadmin4
+        container_name: blog_pga
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@example.com
+            PGADMIN_DEFAULT_PASSWORD: admin
+        ports:
+            -   "8082:80"
+        depends_on:
+            -   postgresql
+
+    mail_hog:
+        image: mailhog/mailhog
+        container_name: blog_mail
+        logging:
+            driver: 'none'
+        ports:
+            -   "1025:1025"
+            -   "8025:8025"
+        
+
+    
