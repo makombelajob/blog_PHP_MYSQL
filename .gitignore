@@ -1,3 +1,5 @@
 mysql
 postgresql
 .idea/inspectionProfiles/Project_Default.xml
+postgres/data/postmaster.opts
+postgres/data/postmaster.pid

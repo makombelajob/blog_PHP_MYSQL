@@ -22,7 +22,7 @@ require_once 'includes/header.php';
         <tr class="row my-1 bg-primary rounded-3 my-1">
             <td class="col fs-2"><?= $post['id'] ;?></td>
             <td class="col fs-2 text-white"><?= $post['title'] ;?></td>
-            <td class="col fs-2 text-white"><?= $post['created_at'] ;?></td>
+            <td class="col fs-2 text-white"><time datetime="date"><?= $post['created_at'] ;?></time></td>
             <td class="col-6 fs-2 text-white"><?= $post['content'] ;?></td>
         </tr>
         </tbody>

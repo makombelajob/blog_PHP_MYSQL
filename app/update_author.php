@@ -1,8 +1,11 @@
 <?php
 global $pdo;
 require_once 'includes/dbconnect.php';
-$sql = 'SELECT lastname, firstname, email FROM authors WHERE id = 1;';
-$stmt = $pdo->query($sql);
+$idUser = 10;
+$sql = 'SELECT lastname, firstname, email FROM authors WHERE id = :id;';
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
+$stmt->execute();
 $author = $stmt->fetch();
 
 // Verification du formulaire avant toute modification et enregistrement
@@ -28,13 +31,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $errorInput['email'] = 'Le mail doit être valide';
     }
     if(empty($errorInput)){
-
-        $sql = "UPDATE authors SET lastname = :last_name, firstname = :first_name, email = :email WHERE id = 1;";
+        $sql = "UPDATE authors SET lastname = :last_name, firstname = :first_name, email = :email WHERE id = :id;";
         $stmt = $pdo->prepare($sql);
         $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
         $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
         $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-
+        $stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
         $exec = $stmt->execute();
         if($exec){
             $finalMsg['success'] = 'Mise à jour réussit';

@@ -15,7 +15,7 @@ try {
     $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    $success =  '<p>connected</p>';
+    $connected =  '<p>connected</p>';
 } catch (PDOException $exception) {
     die($failed = 'Message : ' . $exception->getMessage());
 }
