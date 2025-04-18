@@ -1,6 +1,11 @@
 <?php
 global $pdo;
 require_once 'includes/dbconnect.php';
+
+$sql = 'SELECT name, description FROM categories WHERE id = 5;';
+$stmt = $pdo->query($sql);
+$cat = $stmt->fetch();
+
 $errorsInput = $finalMsg = [];
 
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
@@ -30,32 +35,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $finalMsg['failed'] = 'Modification à échoué';
     }
 }
+require_once 'includes/header.php';
 ?>
-<!doctype html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
 
-    <title>Document</title>
-</head>
 <body>
 <main class="container">
     <h1 class="fs-1 text-center text-uppercase my-3">Ajouter une catégorie</h1>
     <form action="" method="post" class="w-75 m-auto">
         <div  class="fs-1">
             <label class="form-label" for="name">Nom</label>
-            <input class="form-control fs-5" type="text" id="name" name="category_name" placeholder="Entre la catégorie ici"/>
+            <input class="form-control fs-5" type="text" id="name" name="category_name" placeholder="Entre la catégorie ici" value="<?= $cat['name'] ;?>"/>
             <?php if(isset($errorsInput['descriptionName'])) : ;?>
                 <p class="fs-1 text-danger"><?= $errorsInput['descriptionName'];?></p>
             <?php endif ;?>
         </div>
         <div class="fs-1">
             <label for="description" class="form-label">Description</label>
-            <textarea name="description" id="description" cols="30" rows="10" class="form-control fs-3" placeholder="Veuillez entré une catégorie"></textarea>
+            <textarea name="description" id="description" cols="30" rows="10" class="form-control fs-3" placeholder="Veuillez entré une catégorie" value="<?= $cat['description'] ;?>"></textarea>
             <?php if(isset($errorsInput['description'])) : ;?>
                 <p class="fs-1 text-danger"><?= $errorsInput['description'];?></p>
             <?php endif ;?>
