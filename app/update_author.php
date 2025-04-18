@@ -14,13 +14,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $email = $_POST['email'];
 
     // Verification of lastname
-    if(strlen($lastName) > 50) {
+    if(empty($lastName) || strlen($lastName) > 50) {
         $errorInput['lastNError'] = 'Veuillez entre un nom valide';
     }
 
     // Verification of firstname
-    if(strlen($firstName) > 50) {
-        $errorInput['lastNError'] = 'Veuillez entre un prénom valide';
+    if(empty($firstName) || strlen($firstName) > 50) {
+        $errorInput['firstNError'] = 'Veuillez entre un prénom valide';
     }
 
     //Verification of email
@@ -64,16 +64,25 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
             <div class="lastname">
                 <label class="form-label fs-3 text-uppercase" for="lastname">Nom</label>
                 <input class="form-control my-3" id="lastname" type="text" name="lastname" value="<?= $author['lastname'] ?? '' ;?>"/>
+                <?php if(isset($errorInput['lastNError'])) : ;?>
+                    <p class="text-danger"><?= $errorInput['lastNError'] ;?></p>
+                <?php endif; ?>
 
             </div>
             <div class="firstname">
                 <label class="form-label fs-3 text-uppercase" for="firstname">Prénom</label>
                 <input class="form-control my-3" id="firstname" type="text" name="firstname" value="<?= $author['firstname'] ?? '' ;?>"/>
+                <?php if(isset($errorInput['firstNError'])) : ;?>
+                    <p class="text-danger"><?= $errorInput['firstNError'] ;?></p>
+                <?php endif; ?>
 
             </div>
             <div class="email">
                 <label class="form-label fs-3 text-uppercase" for="email">Email</label>
                 <input class="form-control my-3" id="email" type="text" name="email" value="<?= $author['email'] ?? '' ;?>"/>
+                <?php if(isset($errorInput['email'])) : ;?>
+                    <p class="text-danger"><?= $errorInput['email'] ;?></p>
+                <?php endif; ?>
 
             </div>
             <div class="text-center">
