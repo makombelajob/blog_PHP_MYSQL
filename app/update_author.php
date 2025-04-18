@@ -38,7 +38,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $exec = $stmt->execute();
         if($exec){
             $finalMsg['success'] = 'Mise à jour réussit';
-            header('Refresh:3; url=authors.php');
+            header('Refresh:3; url=index.php');
         }else{
             $finalMsg['failed'] = 'Mise à jour à échouer';
         }
