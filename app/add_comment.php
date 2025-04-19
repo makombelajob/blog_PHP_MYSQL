@@ -1,8 +1,16 @@
 <?php
+global $pdo;
+require_once 'includes/dbconnect.php';
+$errorsInput = $finalMsg = [];
+$idUser = 1;
+$sql = 'SELECT name FROM categories WHERE id = :id_user;';
+$stmt = $pdo->prepare($sql);
+
+require_once 'includes/header.php';
 ?>
 <body>
 <main class="container">
-    <h1 class="fs-1 text-center text-uppercase my-3">Ajouter une catégorie</h1>
+    <h1 class="fs-1 text-center text-uppercase my-3">Modifier Une déscription</h1>
     <form action="" method="post" class="w-75 m-auto">
         <div  class="fs-1">
             <label class="form-label" for="name">Nom</label>

@@ -1,7 +1,6 @@
 <?php
 require_once 'includes/dbconnect.php';
 global $pdo;
-
 $sql = 'SELECT name FROM categories WHERE id = 3;';
 $stmt = $pdo->query($sql);
 $category = $stmt->fetch();

@@ -1,57 +1,67 @@
 <?php
 global $pdo;
 require_once 'includes/dbconnect.php';
-$idUser = 10;
-$sql = 'SELECT lastname, firstname, email FROM authors WHERE id = :id;';
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
-$stmt->execute();
-$author = $stmt->fetch();
-
-// Verification du formulaire avant toute modification et enregistrement
 $errorInput = $finalMsg = [];
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
-
-    $lastName = htmlspecialchars(trim($_POST['lastname']));
-    $firstName = htmlspecialchars(trim($_POST['firstname']));
-    $email = $_POST['email'];
-
-    // Verification of lastname
-    if(empty($lastName) || strlen($lastName) > 50) {
-        $errorInput['lastNError'] = 'Veuillez entre un nom valide';
-    }
-
-    // Verification of firstname
-    if(empty($firstName) || strlen($firstName) > 50) {
-        $errorInput['firstNError'] = 'Veuillez entre un prénom valide';
-    }
-
-    //Verification of email
-    if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
-        $errorInput['email'] = 'Le mail doit être valide';
-    }
-    if(empty($errorInput)){
-        $sql = "UPDATE authors SET lastname = :last_name, firstname = :first_name, email = :email WHERE id = :id;";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':last_name', $lastName, PDO::PARAM_STR);
-        $stmt->bindValue(':first_name', $firstName, PDO::PARAM_STR);
-        $stmt->bindValue(':email', $email, PDO::PARAM_STR);
-        $stmt->bindValue(':id', $idUser, PDO::PARAM_INT);
-        $exec = $stmt->execute();
-        if($exec){
-            $finalMsg['success'] = 'Mise à jour réussit';
-            header('Refresh:3; url=index.php');
-        }else{
-            $finalMsg['failed'] = 'Mise à jour à échouer';
-        }
+// Recupération de l'id dans un url
+$idUser = $_GET['id'];
+if(!is_numeric($idUser)){
+    $finalMsg['bad_request'] = 'l\'url n\'est pas valide';
+}else{
+    $sql = 'SELECT * FROM authors WHERE id = :id_user;';
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':id_user', $idUser, PDO::PARAM_INT);
+    $stmt->execute();
+    /** @var array $author */
+    $author = $stmt->fetch();
+    if(!$author){
+        $finalMsg['noAuthor'] = 'Author not found !';
     }else{
-        $finalMsg['failedALL'] = 'Modification échouée';
+        $finalMsg['author'] = 'Author found !!!';
+        // Verification du changement de l'auteur
+        if($_SERVER['REQUEST_METHOD'] === 'POST'){
+
+            $lastname = htmlspecialchars(trim($_POST['lastname']));
+            $firstname = htmlspecialchars(trim($_POST['firstname']));
+            $email = $_POST['email'];
+            if(empty($lastname) || strlen($lastname) > 50) {
+                $errorInput['lastNError'] = 'Le nom doit être valide';
+            }
+            if(empty($firstname) || strlen($firstname) > 50) {
+                $errorInput['firstNError'] = 'Le prénom doit être valide';
+            }
+            if(!filter_var($email, FILTER_VALIDATE_EMAIL)){
+                $errorInput['email'] = 'L\'email doit être valide';
+            }
+            if(empty($errorInput)){
+                // Modification de l'auteur
+                $sql = 'UPDATE authors SET lastname = :last_name, firstname = :first_name, email = :email WHERE id = :id_user;';
+                $stmt = $pdo->prepare($sql);
+                $stmt->bindValue(':last_name', $lastname, PDO::PARAM_STR);
+                $stmt->bindValue(':first_name', $firstname, PDO::PARAM_STR);
+                $stmt->bindValue(':email', $email, PDO::PARAM_STR);
+                $stmt->bindValue('id_user', $idUser, PDO::PARAM_INT);
+                $exec = $stmt->execute();
+
+                $finalMsg['success'] = 'Updated authors';
+            }else{
+                $finalMsg['failed'] = 'Updated Failed';
+            }
+        }
+
     }
+
+    // Verification de champs avant la modification
+
 }
 require_once 'includes/header.php';
 ?>
 <body>
-    <main class="container">
+    <main class="container my-5">
+        <div class="my-3 bg-warning rounded">
+            <?php if(isset($finalMsg['bad_request']))  : ;?>
+                <p class="text-danger fs-2 px-3"><?= $finalMsg ? $finalMsg['bad_request'] : '' ;?></p>
+            <?php endif; ?>
+        </div>
         <h1 class="text-center text-uppercase fs-1">Ajouter un Auteur</h1>
         <form action="" method="post" class="w-75 m-auto">
             <div class="lastname">
@@ -78,14 +88,17 @@ require_once 'includes/header.php';
                 <?php endif; ?>
 
             </div>
+            <div class="hidden">
+                <input type="hidden" name="id" value="<?= $author['id'] ;?>">
+            </div>
             <div class="text-center">
-                <button class="btn btn-primary fs-1" type="submit">Ajouter</button>
+                <button class="btn btn-primary fs-1" type="submit">Modifier</button>
             </div>
         </form>
         <div class="my-3 bg-warning rounded">
-            <?php $message = $finalMsg['success'] ?? $finalMsg['failed'] ?? '';
+            <?php $message = $finalMsg['success'] ?? $finalMsg['failed'] ?? $finalMsg['noAuthor'] ?? $finalMsg['author'] ?? '';
             if(!empty($message)) : ?>
-                <p class="fs-1 p-3"><?= $finalMsg['success'] ?? $finalMsg['failed'] ?? '';?></p>
+                <p class="fs-1 p-3"><?= $finalMsg['success'] ?? $finalMsg['failed'] ?? $finalMsg['noAuthor'] ?? $finalMsg['author']  ?? '';?></p>
             <?php endif; ?>
         </div>
     </main>

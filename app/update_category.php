@@ -2,45 +2,50 @@
 global $pdo;
 require_once 'includes/dbconnect.php';
 
-$sql = 'SELECT name, description FROM categories WHERE id = 5;';
-$stmt = $pdo->query($sql);
-$cat = $stmt->fetch();
-
 $errorsInput = $finalMsg = [];
+$idUser = $_GET['id'];
+if(!is_numeric($idUser)){
+    $finalMsg['noUrl'] = 'Url not found';
+}else{
+    $sql = 'SELECT name, description FROM categories WHERE id = :id_user;';
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':id_user', $idUser, PDO::PARAM_INT);
+    $stmt->execute();
+    $cat = $stmt->fetch();
+    $finalMsg['url'] = 'Good url ! 🌏';
 
-if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    if($_SERVER['REQUEST_METHOD'] === 'POST'){
+        $nameCategory = htmlspecialchars(trim($_POST['category_name']));
+        $description = htmlspecialchars(trim($_POST['description']));
 
-    $descriptionName = htmlspecialchars(trim($_POST['category_name'])) ?? '';
-    $description = htmlspecialchars($_POST['description']) ?? '';
-
-    if(empty($descriptionName) || strlen($descriptionName) > 50){
-        $errorsInput['descriptionName'] = 'Le nom doit être valide';
-    }
-
-    if(strlen($description) > 255){
-        $errorsInput['description'] = 'Pas plus de 255 caractères';
-    }
-
-    if(empty($errorsInput)){
-
-        $sql = "INSERT INTO categories(name, description) VALUES (:name,:description);";
-        $stmt = $pdo->prepare($sql);
-        $stmt->bindValue(':name', $descriptionName, PDO::PARAM_STR);
-        $stmt->bindValue(':description', $description, PDO::PARAM_STR);
-        $exec = $stmt->execute();
-        if($exec){
-            $finalMsg['success'] = 'Modification faites';
+        // verification du contenu des champs
+        if(empty($nameCategory) || strlen($nameCategory) > 50){
+            $errorsInput['descriptionName'] = 'Le nom doit être correcte';
         }
-    }else{
-        $finalMsg['failed'] = 'Modification à échoué';
+        if(!empty($errorsInput)){
+            $finalMsg['failed'] = 'Check all before modification';
+        }else{
+            $sql = 'UPDATE categories SET name = :name, description = :description WHERE id = :id_user;';
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':name', $nameCategory, PDO::PARAM_STR);
+            $stmt->bindValue(':description', $description, PDO::PARAM_STR);
+            $stmt->bindValue(':id_user', $idUser, PDO::PARAM_INT);
+            $exec = $stmt->execute();
+            if(!$exec){
+                $finalMsg['failed'] = 'Update failed !!!';
+            }else{
+                $finalMsg['success'] = 'Updated category';
+            }
+        }
     }
+
 }
 require_once 'includes/header.php';
 ?>
 
 <body>
 <main class="container">
-    <h1 class="fs-1 text-center text-uppercase my-3">Ajouter une catégorie</h1>
+    <h1 class="fs-1 text-center text-uppercase my-3">Modifier une catégorie</h1>
     <form action="" method="post" class="w-75 m-auto">
         <div  class="fs-1">
             <label class="form-label" for="name">Nom</label>
@@ -57,13 +62,13 @@ require_once 'includes/header.php';
             <?php endif ;?>
         </div>
         <div class="text-center my-3">
-            <button class="btn btn-primary" type="submit">Ajouter</button>
+            <button class="btn btn-primary" type="submit">Modifier</button>
         </div>
     </form>
     <div class="text-center bg-warning rounded-3">
-        <?php $msg = $finalMsg['success'] ?? $finalMsg['failed'] ?? '' ;
+        <?php $msg = $finalMsg['success'] ?? $finalMsg['failed'] ?? $finalMsg['noUrl'] ?? $finalMsg['url'] ?? '' ;
         if(!empty($msg)) : ?>
-            <p class="fs-1"><?= $finalMsg['success'] ?? $finalMsg['failed'] ?? '' ;?></p>
+            <p class="fs-1"><?= $finalMsg['success'] ?? $finalMsg['failed'] ?? $finalMsg['noUrl'] ?? $finalMsg['url'] ?? '' ;?></p>
         <?php endif ;?>
     </div>
 </main>
