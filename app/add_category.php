@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/dbconnect.php';
 global $pdo;
-$sql = 'SELECT name FROM categories WHERE id = 3;';
+$sql = 'SELECT name, description FROM categories WHERE id = 3;';
 $stmt = $pdo->query($sql);
 $category = $stmt->fetch();
 
@@ -47,7 +47,7 @@ require_once 'includes/header.php';
             </div>
             <div class="fs-1">
                 <label for="description" class="form-label">Description</label>
-                <textarea name="description" id="description" cols="30" rows="10" class="form-control fs-3" placeholder="Veuillez entré une catégorie"></textarea>
+                <textarea name="description" id="description" cols="30" rows="10" class="form-control fs-3" placeholder="Veuillez entré une catégorie"><?= $category['description'] ;?></textarea>
                 <?php if(isset($errorsInput['descriptionError'])) : ;?>
                     <p class="fs-1 text-danger"><?= $errorsInput['descriptionError'];?></p>
                 <?php endif ;?>
