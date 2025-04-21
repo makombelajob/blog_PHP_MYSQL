@@ -6,8 +6,6 @@ require_once 'includes/add_user.php';
 $errorInput = $finalMsg =  [];
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    var_dump($errorInput);
-
     $lastname = htmlspecialchars(trim($_POST['lastname'])) ?? '';
     $firstname = htmlspecialchars(trim($_POST['firstname'])) ?? '';
     $email = $_POST['email'] ?? '';
@@ -38,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if($exec){
             $lastname = $firstname = $email = '';
             $finalMsg['success'] = 'Inscription réussie';
-            header('Refresh:3; url=home.php');
+            header('Refresh:3; url=index.php');
         }else{
             $finalMsg['failed'] = 'L\'inscription a échoué';
         }

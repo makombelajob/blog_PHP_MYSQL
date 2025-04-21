@@ -5,27 +5,39 @@ require_once 'includes/dbconnect.php';
 $sql = 'SELECT * FROM authors;';
 $stmt = $pdo->query($sql);
 $authors = $stmt->fetchAll();
-$finalMsg = [];
+$errorsMsg = $finalMsg = [];
 // Delete logic code
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $delete = $_POST['delete'];
-    if($delete){
-        // Prepare request post
-        $sqlPost = 'DELETE FROM posts WHERE posts.authors_id = :id_author;';
-        $stmtPost = $pdo->prepare($sql);
-        $stmtPost->bindValue(':id_author', $delete, PDO::PARAM_INT);
-        $stmtPost->execute();
+    $btnDelete = trim($_POST['delete']);
+    // Commande sql with try and catch
+    try{
+        $sql = 'DELETE FROM comments WHERE posts_id IN (SELECT id FROM posts WHERE authors_id = :author_id);';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':author_id', $btnDelete, PDO::PARAM_INT);
+        $exec1 = $stmt->execute();
 
-        // Prepare request author
-        $sqlAuthor = 'DELETE FROM authors WHERE id = :id_author;';
-        $stmtAuthor = $pdo->prepare($sqlAuthor);
-        $stmtAuthor->bindValue(':id_author', $delete, PDO::PARAM_INT);
-        $stmtAuthor->execute();
+        $sql = 'DELETE FROM posts_categories WHERE posts_id IN (SELECT id FROM posts WHERE authors_id = :author_id);';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':author_id', $btnDelete, PDO::PARAM_INT);
+        $exec2 = $stmt->execute();
 
-        $pdo->commit();
-        $finalMsg['deleted'] = 'Author was deleted';
-        header('Refresh:1; url=delete_author.php');
-        exit();
+        $sql = 'DELETE FROM posts WHERE authors_id = :author_id;';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':author_id', $btnDelete, PDO::PARAM_INT);
+        $exec3 = $stmt->execute();
+
+        $sql = 'DELETE FROM authors WHERE id = :author_id;';
+        $stmt = $pdo->prepare($sql);
+        $stmt->bindValue(':author_id', $btnDelete, PDO::PARAM_INT);
+        $exec4 = $stmt->execute();
+
+        if(!$exec1 || !$exec2 || !$exec3){
+            $finalMsg['failed'] = 'Deleting failed !';
+        }else{
+            $finalMsg['success'] = 'Delete Done 💾👍 !!';
+        }
+    }catch(PDOException $e){
+        $finalMsg['failed'] = $e->getMessage();
     }
 }
 require_once 'includes/header.php';
@@ -33,7 +45,7 @@ require_once 'includes/header.php';
 
 <body>
 <main class="container">
-    <h2 class="fs-1 text-center text-uppercase my-3">Les noms des auteurs</h2>
+    <h2 class="fs-1 text-center text-uppercase my-3">Suppression des auteurs</h2>
     <table class="row">
         <thead class="col-12">
         <tr class="bg-warning row rounded-4 my-1">
@@ -61,8 +73,8 @@ require_once 'includes/header.php';
         </tbody>
     </table>
     <div class="my-5 text-center bg-danger rounded-3">
-        <?php if(isset($finalMsg['deleted']) ?? isset($finalMsg['delFailed']) ?? '') : ;?>
-            <p class="fs-1 text-white"><?= $finalMsg['deleted'] ?? $finalMsg['delFailed'] ?? '' ?></p>
+        <?php if(isset($errorsMsg) ?? isset($finalMsg)) : ;?>
+            <p class="fs-1"><?= $errorsMsg['id'] ?? $finalMsg['failed'] ?? $finalMsg['success'] ?? '' ;?></p>
         <?php endif ;?>
     </div>
 </main>
