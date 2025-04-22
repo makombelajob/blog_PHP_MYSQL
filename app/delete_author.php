@@ -46,6 +46,7 @@ require_once 'includes/header.php';
 <body>
 <main class="container">
     <h2 class="fs-1 text-center text-uppercase my-3">Suppression des auteurs</h2>
+    <?php require_once 'includes/options_list.php';?>
     <table class="row">
         <thead class="col-12">
         <tr class="bg-warning row rounded-4 my-1">

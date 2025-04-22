@@ -9,6 +9,7 @@ require_once 'includes/header.php';
 <body>
     <main class="container my-5">
         <h1 class="fs-1 text-center text-uppercase my-5">Affichage des posts</h1>
+        <?php require_once 'includes/options_list.php';?>
         <table class="row">
             <thead class="bg-danger col-12">
                 <tr class="row">

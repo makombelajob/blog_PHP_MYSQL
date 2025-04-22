@@ -167,30 +167,30 @@ function insertPosts($pdo) {
 // Fonction pour insérer des relations entre les posts et les catégories
 function insertPostsCategories($pdo) {
     $postsCategories = [
-        [1, 4], // Les meilleures destinations de voyage en Europe -> Voyage
-        [2, 5], // Recette de la tarte aux pommes -> Cuisine
-        [3, 7], // Comment investir en bourse ? -> Finance
-        [4, 26], // Les meilleurs exercices de fitness -> Fitness
-        [5, 19], // Les dernières innovations en matière de smartphones -> High-Tech
-        [6, 21], // Conseils pour bien dormir -> Bien-être
-        [7, 30], // Les meilleurs films de 2025 -> Cinéma
-        [8, 21], // Les bienfaits de la méditation -> Bien-être
-        [9, 14], // Les avantages du télétravail -> Business
-        [10, 18], // Les tendances du marché immobilier en 2025 -> Immobilier
-        [11, 26], // Les meilleurs exercices de musculation -> Fitness
-        [12, 26], // Les bienfaits du vélo -> Fitness
-        [13, 23], // Les tendances de la décoration intérieure en 2025 -> Décoration
-        [14, 26], // Les meilleurs exercices de cardio -> Fitness
-        [15, 21], // Les bienfaits de la marche -> Bien-être
+        [1, 4], // Les meilleures destinations de voyage en Europe → Voyage
+        [2, 5], // Recette de la tarte aux pommes → Cuisine
+        [3, 7], // Comment investir en bourse ? → Finance
+        [4, 26], // Les meilleurs exercices de fitness → Fitness
+        [5, 19], // Les dernières innovations en matière de smartphones → High-Tech
+        [6, 21], // Conseils pour bien dormir → Bien-être
+        [7, 30], // Les meilleurs films de 2025 → Cinéma
+        [8, 21], // Les bienfaits de la méditation → Bien-être
+        [9, 14], // Les avantages du télétravail → Business
+        [10, 18], // Les tendances du marché immobilier en 2025 → Immobilier
+        [11, 26], // Les meilleurs exercices de musculation → Fitness
+        [12, 26], // Les bienfaits du vélo → Fitness
+        [13, 23], // Les tendances de la décoration intérieure en 2025 → Décoration
+        [14, 26], // Les meilleurs exercices de cardio → Fitness
+        [15, 21], // Les bienfaits de la marche → Bien-être
         [16, 8], // Les tendances de la mode masculine en 2025 -> Mode
-        [17, 26], // Les meilleurs exercices de yoga pour débutants -> Fitness
-        [18, 21], // Les bienfaits de la natation -> Bien-être
+        [17, 26], // Les meilleurs exercices de yoga pour débutants → Fitness
+        [18, 21], // Les bienfaits de la natation → Bien-être
         [19, 13], // Les tendances du marché de l'art en 2025 -> Art
-        [20, 26], // Les meilleurs exercices de Pilates -> Fitness
-        [21, 21], // Les bienfaits de la course à pied -> Bien-être
-        [22, 8], // Les tendances de la mode féminine en 2025 -> Mode
-        [23, 26], // Les meilleurs exercices de stretching -> Fitness
-        [24, 21]  // Les bienfaits du Tai Chi -> Bien-être
+        [20, 26], // Les meilleurs exercices de Pilates → Fitness
+        [21, 21], // Les bienfaits de la course à pied → Bien-être
+        [22, 8], // Les tendances de la mode féminine en 2025 → Mode
+        [23, 26], // Les meilleurs exercices de stretching → Fitness
+        [24, 21]  // Les bienfaits du taï-chi → Bien-être
     ];
 
     $stmt = $pdo->prepare("INSERT INTO posts_categories (posts_id, categories_id) VALUES (?, ?)");

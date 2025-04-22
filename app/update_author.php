@@ -43,6 +43,7 @@ if(!is_numeric($idUser)){
                 $exec = $stmt->execute();
 
                 $finalMsg['success'] = 'Updated authors';
+                header('Refresh:3, url=/');
             }else{
                 $finalMsg['failed'] = 'Updated Failed';
             }
@@ -66,7 +67,7 @@ require_once 'includes/header.php';
         <form action="" method="post" class="w-75 m-auto">
             <div class="lastname">
                 <label class="form-label fs-3 text-uppercase" for="lastname">Nom</label>
-                <input class="form-control my-3" id="lastname" type="text" name="lastname" value="<?= $author['lastname'] ?? '' ;?>"/>
+                <input class="form-control my-3 fs-2" id="lastname" type="text" name="lastname" value="<?= $author['lastname'] ?? '' ;?>"/>
                 <?php if(isset($errorInput['lastNError'])) : ;?>
                     <p class="text-danger"><?= $errorInput['lastNError'] ;?></p>
                 <?php endif; ?>
@@ -74,7 +75,7 @@ require_once 'includes/header.php';
             </div>
             <div class="firstname">
                 <label class="form-label fs-3 text-uppercase" for="firstname">Prénom</label>
-                <input class="form-control my-3" id="firstname" type="text" name="firstname" value="<?= $author['firstname'] ?? '' ;?>"/>
+                <input class="form-control my-3 fs-2" id="firstname" type="text" name="firstname" value="<?= $author['firstname'] ?? '' ;?>"/>
                 <?php if(isset($errorInput['firstNError'])) : ;?>
                     <p class="text-danger"><?= $errorInput['firstNError'] ;?></p>
                 <?php endif; ?>
@@ -82,7 +83,7 @@ require_once 'includes/header.php';
             </div>
             <div class="email">
                 <label class="form-label fs-3 text-uppercase" for="email">Email</label>
-                <input class="form-control my-3" id="email" type="text" name="email" value="<?= $author['email'] ?? '' ;?>"/>
+                <input class="form-control my-3 fs-2" id="email" type="text" name="email" value="<?= $author['email'] ?? '' ;?>"/>
                 <?php if(isset($errorInput['email'])) : ;?>
                     <p class="text-danger"><?= $errorInput['email'] ;?></p>
                 <?php endif; ?>
