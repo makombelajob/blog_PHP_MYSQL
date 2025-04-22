@@ -33,7 +33,6 @@ require_once 'includes/header.php';
             <?php endforeach; ?>
             </tbody>
         </table>
-        <?php require_once 'includes/up_button.php';?>
     </main>
 </body>
 </html>
