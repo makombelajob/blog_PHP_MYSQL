@@ -1,12 +1,6 @@
 <?php
 global $pdo;
 require_once 'includes/dbconnect.php';
-
-$sql = 'SELECT * FROM authors;';
-$stmt = $pdo->query($sql);
-$authors = $stmt->fetchAll();
-$errorsMsg = $finalMsg = [];
-// Delete logic code
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $btnDelete = trim($_POST['delete']);
     // Commande sql with try and catch
@@ -40,6 +34,12 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         $finalMsg['failed'] = $e->getMessage();
     }
 }
+// Selection of authors ro display before
+$sql = 'SELECT * FROM authors;';
+$stmt = $pdo->query($sql);
+$authors = $stmt->fetchAll();
+$errorsMsg = $finalMsg = [];
+// Delete logic code
 require_once 'includes/header.php';
 ?>
 
