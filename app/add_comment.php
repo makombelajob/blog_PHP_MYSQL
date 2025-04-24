@@ -1,54 +1,71 @@
 <?php
-global $pdo;
+session_start();
 require_once 'includes/dbconnect.php';
-$errorsInput = $finalMsg = [];
+global $pdo;
 $id = $_GET['id'];
-$sql = 'SELECT id, title, created_at, content FROM posts WHERE id = :post_id;';
-$stmt = $pdo->prepare($sql);
-$stmt->bindValue(':post_id', $id,PDO::PARAM_INT);
-$stmt->execute();
-$post = $stmt->fetch();
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
-    $name = htmlspecialchars(trim($_POST['category'])) ?? '';
-    $description = htmlspecialchars($_POST['description']) ?? '';
-
-    if(empty($name) || strlen($name) > 50) {
-        $errorsInput['name'] = 'Le nom doit être valide !';
+    if(is_numeric($id)){
+        //var_dump($category);
+        $title = htmlspecialchars(trim($_POST['title']));
+        $comment = htmlspecialchars($_POST['comment']);
+        if(empty($comment) || strlen($comment) > 250){
+            $_SESSION['msg']['fieldEmpty'] = 'You must add a comment  !';
+        }else{
+            session_unset();
+            $sql = 'UPDATE comments SET content = :comment WHERE id = :id;';
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+            $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+            $exec = $stmt->execute();
+            if(!$exec){
+                $_SESSION['msg']['failed'] = 'Add comment failed !';
+                header("Refresh:1, url=/add_comment.php/?id=$id");
+            }else{
+                session_unset();
+                header("Refresh:2, url=/post_specific_category.php/?id=$id");
+            }
+            exit();
+        }
     }
-    try{
 
-    }catch (PDOException $e){
-        $finalMsg['failed'] = $e->getMessage();
-    }
 }
+$sql = 'SELECT * FROM posts WHERE id = :id;';
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue('id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$category = $stmt->fetch();
+
 require_once 'includes/header.php';
 ?>
 <body>
+    <header>
+        <nav>
+            <?php include_once 'includes/options_list.php';?>
+        </nav>
+    </header>
 <main class="container">
-    <h1 class="fs-1 text-center text-uppercase my-3">Ajouter Une déscription</h1>
+    <h1 class="fs-1 text-center text-uppercase my-3">Add Comment</h1>
     <form action="" method="post" class="w-75 m-auto">
         <div  class="fs-1">
-            <label class="form-label" for="name">Nom</label>
-            <input class="form-control fs-3" type="text" id="name" name="category" placeholder="Entre la catégorie ici" value="<?= $post['title'] ;?>"/>
-            <?php if(isset($errorsInput['categoryError'])) : ;?>
-                <p class="fs-1 text-danger"><?= $errorsInput['categoryError'];?></p>
-            <?php endif ;?>
+            <label class="form-label" for="title">Title</label>
+            <input class="form-control fs-3" type="text" id="title" name="title" placeholder="" value="<?= $category['title'];?>"/>
+
         </div>
         <div class="fs-1">
-            <label for="description" class="form-label">Description</label>
-            <textarea name="description" id="description" cols="30" rows="10" class="form-control fs-3" placeholder="Veuillez entré une catégorie" ><?= $post['content'] ;?></textarea>
-            <?php if(isset($errorsInput['descriptionError'])) : ;?>
-                <p class="fs-1 text-danger"><?= $errorsInput['descriptionError'];?></p>
-            <?php endif ;?>
+            <label for="comment" class="form-label">Comment</label>
+            <textarea name="comment" id="comment" cols="30" rows="10" class="form-control fs-3" placeholder="Add your comment here" ></textarea>
+            <div class="text-center bg-danger my-3 rounded-3">
+                <?php if(isset($_SESSION) ?? '') : ;?>
+                    <p class="text-uppercase fs-1 text-white"><?= $_SESSION['msg']['fieldEmpty'] ?? '' ;?></p>
+                <?php endif;?>
+            </div>
         </div>
         <div class="text-center my-3">
-            <button class="btn btn-primary" type="submit">Ajouter</button>
+            <button class="btn btn-primary" type="submit">Add</button>
         </div>
     </form>
     <div class="text-center bg-warning rounded-3">
-        <?php if(isset($finalMsg) ?? '' ) : ;?>
-            <p><?= $finalMsg['failed'] ?? $finalMsg['success'] ?? '';?></p>
-        <?php endif ;?>
+
     </div>
 </main>
 </body>

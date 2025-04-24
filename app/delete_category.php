@@ -1,11 +1,6 @@
 <?php
 global $pdo;
 require_once 'includes/dbconnect.php';
-$errorsMsg = $finalMsg = [];
-$sql = 'SELECT * FROM categories;';
-$stmt = $pdo->query($sql);
-$categories = $stmt->fetchAll();
-
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $delete = $_POST['delete'];
     $sql = 'DELETE FROM posts_categories WHERE categories_id = :post_category_id;';
@@ -25,7 +20,10 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
         header('Refresh:3, url=/');
     }
 }
-
+$errorsMsg = $finalMsg = [];
+$sql = 'SELECT * FROM categories;';
+$stmt = $pdo->query($sql);
+$categories = $stmt->fetchAll();
 require_once 'includes/header.php';
 ?>
     <main class="container mt-3">

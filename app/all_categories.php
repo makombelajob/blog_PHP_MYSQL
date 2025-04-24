@@ -8,7 +8,7 @@ $categories = $stmt->fetchAll();
 require_once 'includes/header.php';
 ?>
 <main class="container mt-3">
-    <h1 class="text-uppercase text-center my-3">Supprimer une catégorie</h1>
+    <h1 class="text-uppercase text-center my-3">All categories</h1>
     <ul class="list-unstyled d-flex justify-content-between">
         <li><a class="fs-2 text-secondary text-decoration-none" href="index.php">home</a></li>
         <li><a class="fs-2 text-secondary text-decoration-none" href="delete_category.php">delete category</a></li>
@@ -25,6 +25,7 @@ require_once 'includes/header.php';
             <th class="col fs-1">ID</th>
             <th class="col fs-1 me-5">name</th>
             <th class="col fs-1 me-5">description</th>
+            <th class="col-1 fs-1 me-5">Post</th>
         </tr>
         </thead>
         <tbody class="col-12">
@@ -33,6 +34,7 @@ require_once 'includes/header.php';
                 <td class="col fs-1 text-white"><?= $category['id'] ;?></td>
                 <td class="col fs-1 text-white"><?= $category['name'] ;?></td>
                 <td class="col fs-1 text-white"><?= $category['description'] ;?></td>
+                <td class="col-1 fs-1 text-white"><a class="btn btn-secondary text-white fs-4" href="post_specific_category.php/?id=<?= $category['id'];?>">Plus</a></td>
             </tr>
         <?php endforeach; ?>
         </tbody>
